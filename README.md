@@ -9,6 +9,18 @@ The project is designed for edge devices (e.g., Jetson Orin NX) and will evolve 
 - Fine-tuned EdgeYOLO model(VisDrone dataset)
 - Object detection and classification on static images with bounding box visualization
 
+## Installation
+
+This project requires [EdgeYOLO](https://github.com/edgeyolo/EdgeYOLO) and its dependencies.  
+Please follow the official EdgeYOLO installation guide before running the code.
+
+### 1. Clone EdgeYOLO
+```bash
+git clone https://github.com/edgeyolo/EdgeYOLO.git
+cd EdgeYOLO
+pip install -r requirements.txt
+
+
 ## Usage
 ```bash
 python detect.py --weights edgeyolo_visdrone.pth --source detect_video_EdgeYOLO.mp4  --conf-thres 0.3 --nms-thres 0.5 --input-size 640 640 --fp16 --batch 1 --save-dir ./output 
