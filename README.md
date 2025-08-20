@@ -19,8 +19,9 @@ Please follow the official EdgeYOLO installation guide before running the code.
 git clone https://github.com/edgeyolo/EdgeYOLO.git
 cd EdgeYOLO
 pip install -r requirements.txt
-
+```
 
 ## Usage
 ```bash
 python detect.py --weights edgeyolo_visdrone.pth --source detect_video_EdgeYOLO.mp4  --conf-thres 0.3 --nms-thres 0.5 --input-size 640 640 --fp16 --batch 1 --save-dir ./output 
+```
