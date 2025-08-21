@@ -20,6 +20,8 @@ git clone https://github.com/edgeyolo/EdgeYOLO.git
 cd EdgeYOLO
 pip install -r requirements.txt
 ```
+### 2. Swap detect.py
+- Swap the detect.py file provided in this irepo with the detect.py file that is inside the edgeyolo folder. This is a customized inference script. 
 
 ## Usage
 ```bash
