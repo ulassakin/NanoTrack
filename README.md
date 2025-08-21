@@ -9,7 +9,7 @@ The project is designed for edge devices (e.g., Jetson Orin NX) and will evolve 
 
 
 ![Inference 1](example_inference_images/edgeYOLO_gh_example.png)
-![Inference 2](example_inference_images/edgeYOLO_gh_example1.png)
+![Inference 2](example_inference_images/edgeYOLO_gh_example_1.png)
 ![Inference 3](example_inference_images/edgeYOLO_gh_example2.png)
 
 
