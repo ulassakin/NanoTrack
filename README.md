@@ -4,25 +4,13 @@ Real-time small object detection and tracking on edge devices using EdgeYOLO, No
 
 This repository contains a fine-tuned EdgeYOLO model for small object detection using VisDrone dataset, starting with **image inference**.  
 The project is designed for edge devices (e.g., Jetson Orin NX) and will evolve step by step into a full real-time detection + tracking system with a user interface.
-
 ## Demo Inference Images
 
-<table>
-  <tr>
-    <td align="center">
-      <img src="example_inference_images/edgeYOLO_gh_example.png" width="250px"><br>
-      <sub>Inference 1</sub>
-    </td>
-    <td align="center">
-      <img src="example_inference_images/edgeYOLO_gh_example_1.png" width="250px"><br>
-      <sub>Inference 2</sub>
-    </td>
-    <td align="center">
-      <img src="example_inference_images/edgeYOLO_gh_example2.png" width="250px"><br>
-      <sub>Inference 3</sub>
-    </td>
-  </tr>
-</table>
+<p align="center">
+  <img src="example_inference_images/edgeYOLO_gh_example.png" alt="Inference 1" width="30%">
+  <img src="example_inference_images/edgeYOLO_gh_example_1.png" alt="Inference 2" width="30%">
+  <img src="example_inference_images/edgeYOLO_gh_example2.png" alt="Inference 3" width="30%">
+</p>
 
 
 ## Current Features
