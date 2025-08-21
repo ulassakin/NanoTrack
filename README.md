@@ -8,9 +8,9 @@ The project is designed for edge devices (e.g., Jetson Orin NX) and will evolve 
 ##Demo Inference Images
 
 
-![Inference 1](example_inference_images/inference1.jpg)
-![Inference 2](example_inference_images/inference2.jpg)
-![Inference 3](example_inference_images/inference3.jpg)
+![Inference 1](example_inference_images/edgeYOLO_gh_example.png)
+![Inference 2](example_inference_images/edgeYOLO_gh_example.png1)
+![Inference 3](example_inference_images/edgeYOLO_gh_example.png2)
 
 example_inference_images
 ## Current Features
