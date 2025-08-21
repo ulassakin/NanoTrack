@@ -7,10 +7,22 @@ The project is designed for edge devices (e.g., Jetson Orin NX) and will evolve 
 
 ## Demo Inference Images
 
-
-![Inference 1](example_inference_images/edgeYOLO_gh_example.png)
-![Inference 2](example_inference_images/edgeYOLO_gh_example_1.png)
-![Inference 3](example_inference_images/edgeYOLO_gh_example2.png)
+<table>
+  <tr>
+    <td align="center">
+      <img src="example_inference_images/edgeYOLO_gh_example.png" width="250px"><br>
+      <sub>Inference 1</sub>
+    </td>
+    <td align="center">
+      <img src="example_inference_images/edgeYOLO_gh_example_1.png" width="250px"><br>
+      <sub>Inference 2</sub>
+    </td>
+    <td align="center">
+      <img src="example_inference_images/edgeYOLO_gh_example2.png" width="250px"><br>
+      <sub>Inference 3</sub>
+    </td>
+  </tr>
+</table>
 
 
 ## Current Features
