@@ -21,7 +21,7 @@ cd EdgeYOLO
 pip install -r requirements.txt
 ```
 ### 2. Swap detect.py
-- Swap the detect.py file provided in this irepo with the detect.py file that is inside the edgeyolo folder. This is a customized inference script. 
+- Swap the detect.py file provided in this repository with the detect.py file that is inside the edgeyolo folder. This is a customized inference script. 
 
 ### 3. Download the VisDrone fine-tuned EdgeYOLO model from the releases
 -Put it to the edgeyolo folder.
