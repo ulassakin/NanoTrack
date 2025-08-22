@@ -31,7 +31,30 @@ pip install -r requirements.txt
 -Run the commands **inside the `EdgeYOLO` folder** after replacing `detect.py` and downloading the weights.
 
 
----1)Image Inference:
+###A)Image Inference:
 ```bash
-python detect.py --weights edgeyolo_visdrone.pth --source detect_video_EdgeYOLO.mp4  --conf-thres 0.3 --nms-thres 0.5 --input-size 640 640 --fp16 --batch 1 --save-dir ./output 
+python detect.py \
+  --weights edgeyolo_visdrone.pth \
+  --source detect_video_EdgeYOLO.mp4 \
+  --conf-thres 0.3 \
+  --nms-thres 0.5 \ 
+  --input-size 640 640 \
+  --fp16 \
+  --batch 1 \ 
+  --save-dir ./output 
+```
+###B)Video Inference:
+-detect.py supports video when you pass a video file as --source. You can also enable multi-process decoding with --mp.
+```bash
+python detect.py \
+  --weights edgeyolo_visdrone.pth \
+  --source path/to/video.mp4 \
+  --conf-thres 0.3 \
+  --nms-thres 0.5 \
+  --input-size 640 640 \
+  --fp16 \
+  --batch 1 \
+  --mp \
+  --save-dir ./output
+
 ```
