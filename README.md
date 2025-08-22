@@ -30,8 +30,9 @@ pip install -r requirements.txt
 ## Usage
 -Run the commands **inside the `EdgeYOLO` folder** after replacing `detect.py` and downloading the weights.
 
+---
 
-###A)Image Inference:
+### A)Image Inference:
 ```bash
 python detect.py \
   --weights edgeyolo_visdrone.pth \
@@ -43,7 +44,11 @@ python detect.py \
   --batch 1 \ 
   --save-dir ./output 
 ```
-###B)Video Inference:
+---
+
+
+### B)Video Inference:
+
 -detect.py supports video when you pass a video file as --source. You can also enable multi-process decoding with --mp.
 ```bash
 python detect.py \
