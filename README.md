@@ -1,4 +1,4 @@
-# NanoTrack: Real-time Small Object Detection & Tracking (v0.1 - Image Inference)
+# NanoTrack: Real-time Small Object Detection & Tracking (v0.1 - Image and Video Inference)
 
 Real-time small object detection and tracking on edge devices using EdgeYOLO, Norfair, ByteTrack and TensorRT.
 
