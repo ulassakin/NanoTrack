@@ -1,6 +1,6 @@
 # NanoTrack: Real-time Small Object Detection & Tracking (v0.1 - Image Inference)
 
-Real-time small object detection and tracking on edge devices using EdgeYOLO, Norfair and TensorRT.
+Real-time small object detection and tracking on edge devices using EdgeYOLO, Norfair, ByteTrack and TensorRT.
 
 This repository contains a fine-tuned EdgeYOLO model for small object detection using VisDrone dataset, starting with **image and video inference**.  
 The project is designed for edge devices (e.g., Jetson Orin NX, Xavier NX) and will evolve step by step into a full real-time detection + tracking system with a user interface.
