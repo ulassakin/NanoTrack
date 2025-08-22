@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2>Sonuç</h2>
+  <div class="grid-2">
+    <div>
+      <h3>Girdi</h3>
+      <video class="video" controls src="{{ url_for('serve_upload', filename=in_video) }}"></video>
+    </div>
+    <div>
+      <h3>Çıktı ({{ tracker }})</h3>
+      <video class="video" controls src="{{ url_for('serve_output', filename=out_video) }}"></video>
+      <div style="margin-top:12px;">
+        <a class="btn" href="{{ url_for('serve_output', filename=out_video) }}" download>İndir (.mp4)</a>
+      </div>
+      {% if conf and iou and nms %}
+      <div class="pill">conf={{ conf }}, iou={{ iou }}, nms={{ nms }}</div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+
