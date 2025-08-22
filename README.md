@@ -28,7 +28,8 @@ pip install -r requirements.txt
 -Put it to the edgeyolo folder.
 
 ## Usage
-Run the commands **inside the `EdgeYOLO` folder** after replacing `detect.py` and downloading the weights.
+-Run the commands **inside the `EdgeYOLO` folder** after replacing `detect.py` and downloading the weights.
+
 
 ---1)Image Inference:
 ```bash
