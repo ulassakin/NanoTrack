@@ -2,7 +2,7 @@
 
 Real-time small object detection and tracking on edge devices using EdgeYOLO-S, Norfair, ByteTrack and TensorRT.
 
-This repository contains a fine-tuned EdgeYOLO model for small object detection using VisDrone dataset, starting with **image and video inference**.  
+This repository contains a fine-tuned EdgeYOLO-S model for small object detection using VisDrone dataset, starting with **image and video inference**.  
 The project is designed for edge devices (e.g., Jetson Orin NX, Xavier NX) and will evolve step by step into a full real-time detection + tracking system with a user interface.
 ## Demo Inference Images ![Inference 1](example_inferences/edgeYOLO_gh_example.png) ![Inference 2](example_inferences/edgeYOLO_gh_example_1.png) ![Inference 3](example_inferences/edgeYOLO_gh_example2.png)
 ### Demo Video
@@ -10,7 +10,7 @@ The project is designed for edge devices (e.g., Jetson Orin NX, Xavier NX) and w
 
 
 ## Current Features
-- Fine-tuned EdgeYOLO model(VisDrone dataset)
+- Fine-tuned EdgeYOLO-S model(VisDrone dataset)
 - Object detection and classification on static images with bounding box visualization
 - **Video inference:** MP4 and other formats via the same `detect.py`
 - Optional FP16 inference and configurable input size / thresholds
@@ -28,7 +28,7 @@ pip install -r requirements.txt
 ### 2. Swap detect.py
 - Swap the detect.py file provided in this repository with the detect.py file that is inside the edgeyolo folder. This is a customized inference script. 
 
-### 3. Download the VisDrone fine-tuned EdgeYOLO model from the releases
+### 3. Download the VisDrone fine-tuned EdgeYOLO-S model from the releases
 -Put it to the edgeyolo folder.
 
 ## Usage
