@@ -72,4 +72,19 @@ python detect.py \
   --save-dir ./output
 
 ```
-### 📡C) Real-time Camera Inference (USB / CSI)
+### C) Real-time Camera Inference (USB / CSI):
+-Use the provided **camera_detection.py** script for live camera streams. Engine file must be used in this inference for optimization. Engine file can be created using the [ONNX model provided in Releases](https://github.com/ulassakin/realtime-edge-small-object-tracking/releases/download/v0.2/edgeyolo_s.onnx).
+
+```bash
+python detect.py \
+  --weights edgeyolo_visdrone.pth \
+  --source path/to/video.mp4 \
+  --conf-thres 0.3 \
+  --nms-thres 0.5 \
+  --input-size 640 640 \
+  --fp16 \
+  --batch 1 \
+  --mp \
+  --save-dir ./output
+
+```
