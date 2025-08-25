@@ -72,3 +72,4 @@ python detect.py \
   --save-dir ./output
 
 ```
+### 📡C) Real-time Camera Inference (USB / CSI)
