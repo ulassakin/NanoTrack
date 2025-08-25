@@ -76,15 +76,13 @@ python detect.py \
 -Use the provided **camera_detection.py** script for live camera streams. Engine file must be used in this inference for optimization. Engine file can be created using the [ONNX model provided in Releases](https://github.com/ulassakin/realtime-edge-small-object-tracking/releases/download/v0.2/edgeyolo_s.onnx.zip).
 
 ```bash
-python detect.py \
-  --weights edgeyolo_visdrone.pth \
-  --source path/to/video.mp4 \
+python3 camera_detection.py \
+  --engine models/edgeyolo_s.engine \
+  --meta models/edgeyolo.json \
+  --gst "v4l2src device=/dev/video0 ! image/jpeg,width=1280,height=720,framerate=30/1 ! jpegdec ! videoconvert ! video/x-raw,format=BGR ! appsink drop=true sync=false" \
   --conf-thres 0.3 \
-  --nms-thres 0.5 \
-  --input-size 640 640 \
-  --fp16 \
-  --batch 1 \
-  --mp \
-  --save-dir ./output
+  --iou-thres 0.5 \
+  --save ./output_gst.mp4
+
 
 ```
