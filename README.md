@@ -73,7 +73,7 @@ python detect.py \
 
 ```
 ### C) Real-time Camera Inference (USB / CSI):
--Use the provided **camera_detection.py** script for live camera streams. Engine file must be used in this inference for optimization. Engine file can be created using the [ONNX model provided in Releases](https://github.com/ulassakin/realtime-edge-small-object-tracking/releases/download/v0.2/edgeyolo_s.onnx).
+-Use the provided **camera_detection.py** script for live camera streams. Engine file must be used in this inference for optimization. Engine file can be created using the [ONNX model provided in Releases](https://github.com/ulassakin/realtime-edge-small-object-tracking/releases/download/v0.2/edgeyolo_s.onnx.zip).
 
 ```bash
 python detect.py \
