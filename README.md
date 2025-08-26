@@ -16,7 +16,8 @@ The project is designed for edge devices (e.g., Jetson Orin NX, Xavier NX) and w
 - **Video inference**: MP4 and other formats via the same `detect.py`
 - **Real-time camera inference**: USB / CSI cameras or custom GStreamer pipelines with `camera_detection.py`
 - Optional FP16 inference and configurable input size / thresholds
-
+- Object tracking with Norfair (MOT benchmark-level tracker)
+- Object traking with ByteTrack (lightweight tracker)
 ---
 
 ## Installation
