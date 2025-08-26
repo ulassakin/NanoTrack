@@ -75,6 +75,7 @@ python detect.py \
 ```
 ### C)Video Tracking (Norfair / ByteTrack):
 -Run object detection + tracking on video files. Two trackers are supported: Norfair (MOT benchmark-level) and ByteTrack (lightweight).
+
 -Norfair example:
 ```bash
 python3 video_tracking_norfair.py \
