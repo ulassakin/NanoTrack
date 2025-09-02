@@ -2,7 +2,7 @@
 
 Real-time small object detection and tracking on edge devices using EdgeYOLO-S, Norfair, ByteTrack and TensorRT.
 
-This repository contains a fine-tuned EdgeYOLO-S model for small object detection using VisDrone dataset, starting with **image and video inference** and now extended to **real-time camera inference**..  
+This repository contains a fine-tuned EdgeYOLO-S model for small object tracking using VisDrone dataset, starting with **image and video inference** and now extended to **real-time camera and video object tracking**..  
 The project is designed for edge devices (e.g., Jetson Orin NX, Xavier NX) and will evolve step by step into a full real-time detection + tracking system with a user interface.
 ## Demo Inference Images ![Inference 1](example_inferences/edgeYOLO_gh_example.png) ![Inference 2](example_inferences/edgeYOLO_gh_example_1.png) ![Inference 3](example_inferences/edgeYOLO_gh_example2.png)
 ### Demo Video
@@ -14,10 +14,10 @@ The project is designed for edge devices (e.g., Jetson Orin NX, Xavier NX) and w
 - Fine-tuned **EdgeYOLO-S** model (VisDrone dataset)
 - **Image inference**: object detection & classification with bounding box visualization
 - **Video inference**: MP4 and other formats via the same `detect.py`
-- **Real-time camera inference**: USB / CSI cameras or custom GStreamer pipelines with `camera_detection.py`
+- **Real-time camera tracking**: USB / CSI cameras or custom GStreamer pipelines with `camera_tracking.py`
 - Optional FP16 inference and configurable input size / thresholds
-- Object tracking with Norfair (MOT benchmark-level tracker)
-- Object traking with ByteTrack (lightweight tracker)
+- Object tracking with **Norfair** (MOT benchmark-level tracker)
+- Object traking with **ByteTrack** (lightweight tracker)
 ---
 
 ## Installation
@@ -73,11 +73,44 @@ python detect.py \
   --save-dir ./output
 
 ```
-### C) Real-time Camera Inference (USB / CSI):
--Use the provided **camera_detection.py** script for live camera streams. Engine file must be used in this inference for optimization. Engine file can be created using the [ONNX model provided in Releases](https://github.com/ulassakin/realtime-edge-small-object-tracking/releases/download/v0.2/edgeyolo_s.onnx.zip).
+### C)Video Tracking (Norfair / ByteTrack):
+-Run object detection + tracking on video files. Two trackers are supported: Norfair (MOT benchmark-level) and ByteTrack (lightweight).
+
+-Norfair example:
+```bash
+python3 video_tracking_norfair.py \
+  --engine models/edgeyolo_s.engine \
+  --meta models/edgeyolo.json \
+  --video path/to/video.mp4 \
+  --conf-thres 0.3 \
+  --iou-thres 0.5 \
+  --save ./tracked_output_norfair.mp4 \
+  --render all
+
+```
+-ByeTrack example:
+```bash
+python3 video_tracking_bytetrack.py \
+  --engine models/edgeyolo_s.engine \
+  --meta models/edgeyolo.json \
+  --video path/to/video.mp4 \
+  --conf-thres 0.3 \
+  --iou-thres 0.5 \
+  --save ./tracked_output_bytetrack.mp4 \
+  --track-thres 0.6 \
+  --match-thres 0.8 \
+  --track-buffer 1000 \
+  --min-box-area 10 \
+  --render all
+
+```
+
+
+### D) Real-time Camera Inference (USB / CSI):
+-Use the provided **camera_tracking.py** script for live camera streams. Engine file must be used in this inference for optimization. Engine file can be created using the [ONNX model provided in Releases](https://github.com/ulassakin/realtime-edge-small-object-tracking/releases/download/v0.2/edgeyolo_s.onnx.zip).
 
 ```bash
-python3 camera_detection.py \
+python3 camera_tracking.py \
   --engine models/edgeyolo_s.engine \
   --meta models/edgeyolo.json \
   --gst "v4l2src device=/dev/video0 ! image/jpeg,width=1280,height=720,framerate=30/1 ! jpegdec ! videoconvert ! video/x-raw,format=BGR ! appsink drop=true sync=false" \
