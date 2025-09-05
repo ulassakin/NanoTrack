@@ -122,13 +122,19 @@ http://localhost:5000
 ### Folder Structure
 ```
 NanoTrackUI/
-├── app.py              # Flask backend
-├── templates/          # HTML templates
-│   ├── index.html      # Main dashboard
-│   └── results.html    # Results viewer
-├── static/             # CSS, JS, images
+├── app.py              
+├── requirements.txt
+├── templates/          
+│   ├── index.html      
+│   ├── results.html   
+|   ├── base.html
+|   ├── privacy.html
+|   ├── terms.html
+|   └── about.html
+├── static/             
 │   ├── style.css
-│   └── script.js
+│   ├── outputs
+|   └── uploads
 ```
 
 ---
