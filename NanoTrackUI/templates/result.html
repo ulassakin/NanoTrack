@@ -1,0 +1,375 @@
+{% extends "base.html" %}
+{% block title %}Result · NanoTrack{% endblock %}
+{% block content %}
+
+<div class="card">
+  <h2 class="section-title">Result</h2>
+
+  {# ========= LIVE CAMERA MODE ========= #}
+  {% if is_live %}
+    <div class="grid-1">
+      <div>
+        <h3 class="sub-title">Live Camera (Realtime Tracking)</h3>
+        <div class="video-wrap" style="position: relative; display:inline-block; width:100%;">
+          <!-- MJPEG stream -->
+          <img id="liveImg"
+               src="{{ url_for('camera_feed') }}"
+               alt="Live camera stream"
+               style="display:block; width:100%; height:auto; border-radius:12px;">
+
+          <!-- Overlay for click-tracker -->
+          <canvas id="overlayLive"
+        style="position:absolute; inset:0; pointer-events:auto; cursor:crosshair; background:transparent;"></canvas>
+
+        </div>
+
+        <div class="actions-inline" style="margin-top:12px;">
+          <a class="btn" href="{{ url_for('index') }}">← Back</a>
+          <button id="clearBtnLive" class="btn" type="button">Clear selection</button>
+          {% if conf and iou and nms %}
+            <span class="pill">conf={{ conf }}</span>
+            <span class="pill">iou={{ iou }}</span>
+            <span class="pill">nms={{ nms }}</span>
+          {% endif %}
+          <span class="pill">mode=camera</span>
+        </div>
+
+        <div id="selectedBoxLive" style="margin-top:12px;">
+          <h4 class="sub-title">Selected IDs:</h4>
+          <div id="selectedIdsLive" class="pill">(none)</div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+    (function () {
+      const img = document.getElementById("liveImg");
+      const overlay = document.getElementById("overlayLive");
+      const ctx = overlay.getContext("2d");
+      const selectedIdsBox = document.getElementById("selectedIdsLive");
+      const clearBtn = document.getElementById("clearBtnLive");
+
+      let frameIdx = 0;
+      let selectedIds = [];
+
+      function resizeOverlay() {
+        const rect = img.getBoundingClientRect();
+        overlay.width  = Math.max(1, Math.round(rect.width));
+        overlay.height = Math.max(1, Math.round(rect.height));
+        ctx.clearRect(0, 0, overlay.width, overlay.height);
+      }
+
+      function showSelectedIds(ids) {
+        selectedIdsBox.textContent = (ids && ids.length) ? ids.join(", ") : "(none)";
+      }
+
+      // Draw boxes for selected IDs (fetched from backend detections_by_frame)
+      async function paint() {
+        ctx.clearRect(0, 0, overlay.width, overlay.height);
+        if (selectedIds.length === 0) return;
+        try {
+          const res = await fetch(`/frame_dets?frame=${frameIdx}`);
+          const dets = await res.json();
+          for (const d of dets) {
+            if (selectedIds.includes(d.id)) {
+              ctx.lineWidth = 2;
+              ctx.strokeStyle = "lime";
+              ctx.strokeRect(d.x1, d.y1, d.x2 - d.x1, d.y2 - d.y1);
+              ctx.fillStyle = "lime";
+              ctx.fillText(`ID ${d.id}`, d.x1, Math.max(10, d.y1 - 5));
+            }
+          }
+        } catch (e) {
+          console.warn("paint failed", e);
+        }
+      }
+
+      // Click: toggle ID
+      overlay.addEventListener("click", async (evt) => {
+        const rect = overlay.getBoundingClientRect();
+        const x = evt.clientX - rect.left;
+        const y = evt.clientY - rect.top;
+
+        // Ölçek faktörleri (canvas boyutu vs gerçek video boyutu)
+        const sX = (img.naturalWidth  || rect.width)  / rect.width;
+        const sY = (img.naturalHeight || rect.height) / rect.height;
+        const realX = x * sX;
+        const realY = y * sY;
+
+        try {
+          const res = await fetch("/select_id", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ x: realX, y: realY, frame: frameIdx })
+          });
+          const data = await res.json();
+          if (Array.isArray(data.selected_ids)) {
+            selectedIds = data.selected_ids;
+            showSelectedIds(selectedIds);
+            paint();
+          }
+        } catch (e) {
+          console.warn("select_id failed", e);
+        }
+      });
+
+          
+
+      // Clear selection
+      clearBtn.addEventListener("click", async () => {
+        try {
+          const res = await fetch("/clear_selected", { method: "POST" });
+          const data = await res.json();
+          selectedIds = data.selected_ids || [];
+          showSelectedIds(selectedIds);
+          paint();
+        } catch (e) {
+          console.warn("clear_selected failed", e);
+        }
+      });
+
+      // Auto increment frameIdx ~30fps and paint
+      setInterval(() => {
+        frameIdx++;
+        paint();
+      }, 1000 / 30);
+
+      window.addEventListener("resize", resizeOverlay);
+      img.addEventListener("load", resizeOverlay);
+      img.addEventListener("error", () => {
+        setTimeout(() => { img.src = "{{ url_for('camera_feed') }}" + "?ts=" + Date.now(); }, 1500);
+      });
+
+      resizeOverlay();
+      (async function init() {
+        try {
+          const r = await fetch("/selected_ids");
+          selectedIds = await r.json();
+          showSelectedIds(selectedIds);
+        } catch {}
+      })();
+    })();
+    </script>
+
+  {% else %}
+
+  {# ========= VIDEO RESULT MODE (existing behavior) ========= #}
+  <div class="grid-2">
+    <div>
+      <h3 class="sub-title">Input</h3>
+      <video class="video" controls src="{{ url_for('serve_upload', filename=in_video) }}"></video>
+    </div>
+
+    <div>
+      <h3 class="sub-title">Output ({{ tracker }})</h3>
+
+      <!-- Video + canvas overlay -->
+      <div class="video-wrap" style="position: relative; display: inline-block; width:100%;">
+        <!-- Autoplay/loop/muted to reduce latency and allow immediate play -->
+        <video
+          id="outVideo"
+          class="video"
+          loop
+          autoplay
+          muted
+          playsinline
+          preload="metadata"
+          src="{{ url_for('serve_output', filename=out_video) }}"
+          style="display:block;"
+        ></video>
+
+        <!-- Canvas captures clicks for interactive mode -->
+        <canvas id="overlay"
+                style="position:absolute; inset:0; pointer-events:auto; cursor:crosshair;"></canvas>
+      </div>
+
+      <div class="actions-inline" style="margin-top:12px;">
+        <a class="btn" href="{{ url_for('serve_output', filename=out_video) }}" download>Download (.mp4)</a>
+        <button id="clearBtn" class="btn" type="button" style="display:none;">Clear selection</button>
+
+        {% if conf and iou and nms %}
+          <span class="pill">conf={{ conf }}</span>
+          <span class="pill">iou={{ iou }}</span>
+          <span class="pill">nms={{ nms }}</span>
+        {% endif %}
+      </div>
+
+      <div id="selectedBox" style="margin-top:12px;">
+        <h4 class="sub-title">Selected IDs:</h4>
+        <div id="selectedIds" class="pill">(none)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- === JavaScript for VIDEO RESULT MODE === -->
+  <script>
+  (function () {
+    const video = document.getElementById("outVideo");
+    const canvas = document.getElementById("overlay");
+    const ctx = canvas.getContext("2d");
+    const selectedIdsBox = document.getElementById("selectedIds");
+    const clearBtn = document.getElementById("clearBtn");
+
+    // From backend
+    const TRACKING_MODE = "{{ tracking_mode|default('interactive') }}";  // "auto" | "interactive"
+    const FPS = Number("{{ fps|default(30) }}") || 30;
+    const URL_TRACKS = "{{ tracks_url|default('') }}"; // outputs/...tracks.json
+
+    // Interactive mode: show 'Clear selection'
+    clearBtn.style.display = (TRACKING_MODE === "interactive") ? "inline-flex" : "none";
+
+    // Disable context menu/dblclick on the overlay
+    canvas.addEventListener("contextmenu", e => e.preventDefault());
+    canvas.addEventListener("dblclick", e => { e.preventDefault(); e.stopPropagation(); });
+
+    // -------------------- Load tracks.json once --------------------
+    // detsByFrame: frameIndex -> [{id,x1,y1,x2,y2}, ...]
+    const detsByFrame = new Map();
+    let selectedIds = [];
+
+    async function loadTracksOnce() {
+      if (!URL_TRACKS) return;
+      const res = await fetch(URL_TRACKS, { cache: "force-cache" });
+      const data = await res.json();
+
+      if (Array.isArray(data)) {
+        // Flat list format: [{frame, id, x1...}, ...]
+        for (const it of data) {
+          const f = (it.frame|0);
+          if (!detsByFrame.has(f)) detsByFrame.set(f, []);
+          detsByFrame.get(f).push({
+            id: it.id|0, x1: it.x1|0, y1: it.y1|0, x2: it.x2|0, y2: it.y2|0
+          });
+        }
+      } else {
+        // Dict format: {"0":[{id,x1...}, ...], "1":[...], ...}
+        for (const k in data) {
+          const f = Number(k)|0;
+          detsByFrame.set(f, (data[k]||[]).map(d => ({
+            id: d.id|0, x1: d.x1|0, y1: d.y1|0, x2: d.x2|0, y2: d.y2|0
+          })));
+        }
+      }
+    }
+
+    // -------------------- Canvas sizing --------------------
+    let scaleX = 1, scaleY = 1;
+    function resizeCanvas() {
+      const rect = video.getBoundingClientRect();
+      canvas.width  = Math.max(1, Math.round(rect.width));
+      canvas.height = Math.max(1, Math.round(rect.height));
+      scaleX = rect.width  / (video.videoWidth  || rect.width);
+      scaleY = rect.height / (video.videoHeight || rect.height);
+    }
+
+    window.addEventListener("resize", resizeCanvas);
+    video.addEventListener("loadedmetadata", () => {
+      video.muted = true;
+      if (video.paused) { video.play().catch(()=>{}); }
+      resizeCanvas();
+    });
+
+    // -------------------- Helpers --------------------
+    function showSelectedIds(ids) {
+      selectedIdsBox.textContent = (ids && ids.length) ? ids.join(", ") : "(none)";
+    }
+    const frameIdx = () => Math.max(0, Math.floor(video.currentTime * FPS));
+
+    function drawBox(x1, y1, x2, y2) {
+      const sx = x1 * scaleX;
+      const sy = y1 * scaleY;
+      const w  = (x2 - x1) * scaleX;
+      const h  = (y2 - y1) * scaleY;
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = "lime";
+      ctx.strokeRect(sx, sy, w, h);
+    }
+
+    function paint(f) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (TRACKING_MODE !== "interactive" || selectedIds.length === 0) return;
+      const dets = detsByFrame.get(f);
+      if (!dets) return;
+      for (const d of dets) {
+        if (selectedIds.includes(d.id)) {
+          drawBox(d.x1, d.y1, d.x2, d.y2);
+        }
+      }
+    }
+
+    // -------------------- rAF loop --------------------
+    let lastFrame = -1;
+    function loop() {
+      const f = frameIdx();
+      if (f !== lastFrame) {
+        paint(f);
+        lastFrame = f;
+      }
+      requestAnimationFrame(loop);
+    }
+
+    // -------------------- Click: toggle ID --------------------
+    canvas.addEventListener("click", async (evt) => {
+      if (TRACKING_MODE !== "interactive") return;
+
+      const rect = canvas.getBoundingClientRect();
+      const x = evt.clientX - rect.left;
+      const y = evt.clientY - rect.top;
+
+      // Convert to video pixel coords
+      const sX = (video.videoWidth  || rect.width)  / rect.width;
+      const sY = (video.videoHeight || rect.height) / rect.height;
+      const realX = x * sX;
+      const realY = y * sY;
+
+      const f = frameIdx();
+      try {
+        const res = await fetch("/select_id", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ x: realX, y: realY, frame: f })
+        });
+        const data = await res.json();
+        if (Array.isArray(data.selected_ids)) {
+          selectedIds = data.selected_ids.slice();
+          showSelectedIds(selectedIds);
+          paint(f);
+        }
+      } catch (e) {
+        console.warn("select_id failed", e);
+      }
+    });
+
+    // -------------------- Clear selection --------------------
+    document.getElementById("clearBtn").addEventListener("click", async () => {
+      try {
+        const res = await fetch("/clear_selected", { method: "POST" });
+        const data = await res.json();
+        selectedIds = data.selected_ids || [];
+        showSelectedIds(selectedIds);
+        paint(frameIdx());
+      } catch (e) {
+        console.warn("clear_selected failed", e);
+      }
+    });
+
+    // -------------------- Start --------------------
+    (async function start() {
+      await loadTracksOnce();
+      resizeCanvas();
+      try {
+        const r = await fetch("/selected_ids");
+        selectedIds = await r.json();
+        showSelectedIds(selectedIds);
+      } catch {}
+      requestAnimationFrame(loop);
+    })();
+
+  })();
+  </script>
+
+  {% endif %}
+</div>
+
+{% endblock %}
+

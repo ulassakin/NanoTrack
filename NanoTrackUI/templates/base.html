@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <title>{% block title %}Realtime Small Object Detection UI{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav">
+      <a class="brand" href="{{ url_for('index') }}">
+        <span class="brand-logo" aria-hidden="true">◈</span>
+        <span class="brand-name">NanoTrack</span>
+      </a>
+      <nav class="nav-links">
+        <a href="{{ url_for('index') }}">Process</a>
+        <a href="https://github.com/ulassakin/realtime-edge-small-object-tracking" target="_blank" rel="noopener">Documentation</a>
+        <a href="{{ url_for('about') }}">About</a>
+
+      </nav>
+
+    </div>
+  </header>
+
+  <main id="main" class="container main">
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="flash" role="status">
+          {% for item in messages %}
+            <div class="flash-item">{{ item }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+  <div class="container footer-inner">
+    <p>© <span id="year"></span> NanoTrack • Real Time Small Object Detection & Tracking on Edge Devices</p>
+    <div class="footer-links">
+      <a href="{{ url_for('privacy') }}">Privacy</a>
+      <span>•</span>
+      <a href="{{ url_for('terms') }}">Terms</a>
+    </div>
+  </div>
+</footer>
+
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

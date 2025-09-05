@@ -1,0 +1,176 @@
+/* =============================
+   Modern Dark UI — NanoTrack
+   ============================= */
+:root{
+  --bg: #0b0b0f;
+  --panel: #141418;
+  --panel-2:#101014;
+  --text:#e6e6ea;
+  --muted:#a1a1b3;
+  --border:#23232b;
+  --brand:#6D23C9;   /* koyu mor */
+  --brand-2:#8B3DF0; /* vurgu */
+  --success:#22c55e;
+  --shadow: 0 8px 30px rgba(0,0,0,.35);
+}
+
+/* Reset */
+*{ box-sizing:border-box }
+html,body{ height:100% }
+body{
+  margin:0;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+img,video{ max-width:100%; display:block }
+
+/* Containers */
+.container{ max-width:1100px; margin:auto; padding: 24px }
+.main{ padding-top: 18px }
+
+/* Header / Nav */
+.site-header{
+  position: sticky; top:0; z-index:10;
+  backdrop-filter: saturate(120%) blur(6px);
+  background: linear-gradient(180deg, rgba(13,13,18,.75), rgba(13,13,18,.35));
+  border-bottom: 1px solid var(--border);
+}
+.nav{ display:flex; align-items:center; justify-content:space-between; gap:16px }
+.brand{ display:inline-flex; align-items:center; gap:10px; text-decoration:none; color:var(--text) }
+.brand-logo{
+  width:28px; height:28px; display:grid; place-items:center;
+  background:linear-gradient(135deg,var(--brand),var(--brand-2));
+  border-radius:10px; box-shadow: var(--shadow)
+}
+.brand-name{ font-weight:700; letter-spacing:.2px }
+.nav-links{ display:flex; gap:18px }
+.nav-links a{ color: var(--muted); text-decoration:none; font-size:.95rem }
+.nav-links a:hover{ color: var(--text) }
+.nav-links .muted{ opacity:.6; cursor:not-allowed }
+
+/* Cards */
+.card{
+  background: linear-gradient(180deg, var(--panel), var(--panel-2));
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 22px;
+  box-shadow: var(--shadow);
+}
+.card + .card{ margin-top: 16px }
+.card.subtle{ background: rgba(255,255,255,.02) }
+
+/* Typography */
+.section-title{ margin:0 0 12px; font-size:1.4rem; font-weight:700; letter-spacing:.2px }
+.sub-title{ margin:8px 0 10px; font-size:1.05rem; font-weight:600; color:#ddd }
+.hint{ color: var(--muted); font-size:.85rem }
+.hint-block{ display:flex; align-items:center; justify-content:flex-end }
+code{
+  background:#131318; border:1px solid var(--border);
+  padding:2px 6px; border-radius:6px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size:.85em; color:#d7c8ff;
+}
+
+/* Grid */
+.grid{ display:grid; gap: 18px }
+.grid-1{ grid-template-columns: 1fr }
+.grid-2{ grid-template-columns: repeat(2, minmax(0,1fr)); gap:18px }
+.grid-3{ grid-template-columns: repeat(3, minmax(0,1fr)); gap:18px }
+.grid-4{ grid-template-columns: repeat(4, minmax(0,1fr)); gap:18px }
+@media (max-width: 960px){
+  .grid-2, .grid-3, .grid-4{ grid-template-columns: 1fr }
+}
+
+/* Forms */
+.label{ display:block; font-weight:600; margin-bottom:6px }
+.input{
+  width:100%; height:44px; padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: #0f0f14;
+  color: var(--text); font-size: .98rem;
+  transition: box-shadow .2s ease, border-color .2s ease, background .2s ease;
+}
+.input:hover{ background:#12121a }
+.input:focus{
+  outline:none; border-color: var(--brand);
+  box-shadow: 0 0 0 4px rgba(109,35,201,.25);
+}
+.input.file{ padding:10px }
+.input:disabled, select:disabled{
+  opacity:.7; cursor:not-allowed; filter:saturate(.8)
+}
+
+/* Buttons */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  height:44px; padding:0 18px; border-radius:12px; border:0; cursor:pointer;
+  background: linear-gradient(135deg, var(--brand), var(--brand-2));
+  color:white; font-weight:600; letter-spacing:.2px;
+  box-shadow: var(--shadow); transition: transform .06s ease, filter .2s ease;
+}
+.btn:hover{ filter: brightness(1.05) }
+.btn:active{ transform: translateY(1px) }
+.btn:disabled{ opacity:.7; cursor:not-allowed }
+
+/* Actions */
+.form-actions{ margin-top: 6px }
+.actions-inline{ display:flex; align-items:center; gap:10px; margin-top:12px; flex-wrap:wrap }
+
+/* Video & Stream */
+.video{
+  width:100%; aspect-ratio: 16 / 9; background:#0a0a0d;
+  border:1px solid var(--border); border-radius: 14px;
+}
+
+/* Wrapper for <video> or MJPEG <img> + overlay canvas */
+.video-wrap{ position: relative; width:100% }
+.video-wrap video,
+.video-wrap img{
+  width:100%; height:auto; display:block;
+  background:#0a0a0d; border:1px solid var(--border); border-radius:14px;
+}
+.video-wrap canvas{
+  position:absolute; inset:0; pointer-events:auto; /* live click layer later */
+}
+
+/* Pills / Badges */
+.pill{
+  display:inline-flex; align-items:center; gap:6px;
+  height:28px; padding:0 10px; border-radius:999px; border:1px solid rgba(139,61,240,.35);
+  background: rgba(109,35,201,.15); color:#d7c8ff; font-size:.85rem; white-space:nowrap;
+}
+
+/* Selected ID chips */
+.pill-group{
+  display:flex; flex-wrap:wrap; gap:8px; margin-top:6px;
+}
+.pill.active{
+  border-color: var(--success);
+  background: rgba(34,197,94,.15);
+  color: var(--success);
+}
+
+/* Optional shared overlay class */
+.overlay{ position:absolute; inset:0; pointer-events:auto }
+
+/* Flash */
+.flash{
+  background: rgba(109,35,201,.12);
+  border:1px solid rgba(109,35,201,.35);
+  padding:14px; border-radius:12px; margin-bottom:14px
+}
+.flash-item{ color:#d7c8ff; font-weight:600 }
+
+/* Footer */
+.footer{ margin-top: 28px; border-top:1px solid var(--border) }
+.footer-inner{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  padding: 18px 0; color: var(--muted)
+}
+.footer-inner a{ color: var(--muted); text-decoration:none }
+.footer-inner a:hover{ color: var(--text) }
+.footer-inner span{ opacity:.35 }

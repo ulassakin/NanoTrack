@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{% block title %}Video/Camera · NanoTrack{% endblock %}
+{% block content %}
+
+<div class="card">
+  <h2 class="section-title">Mode &amp; Tracker</h2>
+
+  <form method="post" enctype="multipart/form-data" class="grid">
+    <div class="grid-3">
+      <div>
+        <label class="label" for="mode">Mode</label>
+        <select name="mode" id="mode" class="input" onchange="toggleSections()">
+          <option value="upload" selected>Upload a video</option>
+          <option value="camera">Camera (real-time)</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="label" for="tracker">Tracker</label>
+        <select name="tracker" id="tracker" class="input" onchange="toggleSections()">
+          <option value="norfair" selected>Norfair</option>
+          <option value="bytetrack">ByteTrack</option>
+        </select>
+        <small id="trackerHint" class="hint"></small>
+      </div>
+
+      <div id="hintBlock" class="hint-block">
+        <span class="pill">If FPS is important: ByteTrack (video mode)</span>
+      </div>
+
+      <div id="trackingModeRow">
+        <label class="label" for="tracking_mode">Tracking Mode</label>
+        <select name="tracking_mode" id="tracking_mode" class="input">
+          <option value="auto" selected>Track All Objects</option>
+          <option value="interactive">Click to Select</option>
+        </select>
+        <small id="tmHint" class="hint"></small>
+      </div>
+    </div>
+
+    <h2 class="section-title">Model and JSON Paths</h2>
+    <div class="grid-2">
+      <div>
+        <label class="label" for="engine_path">Engine (.engine)</label>
+        <input class="input" id="engine_path" type="text" name="engine_path" placeholder="{{ default_engine }}" />
+        <small class="hint">Leave empty to use default: <code>{{ default_engine }}</code></small>
+      </div>
+      <div>
+        <label class="label" for="meta_path">Meta JSON</label>
+        <input class="input" id="meta_path" type="text" name="meta_path" placeholder="{{ default_meta }}" />
+        <small class="hint">Leave empty to use default: <code>{{ default_meta }}</code></small>
+      </div>
+    </div>
+
+    <h2 class="section-title">Detection / NMS Parameters</h2>
+    <div class="grid-3">
+      <div>
+        <label class="label" for="conf_thres">conf_thres</label>
+        <input class="input" id="conf_thres" type="number" name="conf_thres" step="0.01" min="0" max="1" value="{{ defaults.conf_thres }}">
+      </div>
+      <div>
+        <label class="label" for="iou_thres">iou_thres</label>
+        <input class="input" id="iou_thres" type="number" name="iou_thres" step="0.01" min="0" max="1" value="{{ defaults.iou_thres }}">
+      </div>
+      <div>
+        <label class="label" for="nms_mode">nms_mode</label>
+        <select class="input" id="nms_mode" name="nms_mode">
+          <option value="agnostic" {% if defaults.nms_mode == 'agnostic' %}selected{% endif %}>agnostic</option>
+          <option value="aware"    {% if defaults.nms_mode == 'aware' %}selected{% endif %}>aware</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- ByteTrack params (video mode only) -->
+    <div id="btParams" class="card subtle">
+      <h3 class="sub-title">ByteTrack Parameters</h3>
+      <div class="grid-4">
+        <div>
+          <label class="label" for="track_thres">track_thresh</label>
+          <input class="input" id="track_thres" type="number" step="0.01" min="0" max="1" name="track_thres" value="{{ defaults.track_thres }}">
+        </div>
+        <div>
+          <label class="label" for="match_thres">match_thresh</label>
+          <input class="input" id="match_thres" type="number" step="0.01" min="0" max="1" name="match_thres" value="{{ defaults.match_thres }}">
+        </div>
+        <div>
+          <label class="label" for="track_buffer">track_buffer (frames)</label>
+          <input class="input" id="track_buffer" type="number" min="0" name="track_buffer" value="{{ defaults.track_buffer }}">
+        </div>
+        <div>
+          <label class="label" for="min_box_area">min_box_area</label>
+          <input class="input" id="min_box_area" type="number" step="0.1" min="0" name="min_box_area" value="{{ defaults.min_box_area }}">
+        </div>
+      </div>
+      <small class="hint">Only for ByteTrack in video mode.</small>
+    </div>
+
+    <!-- Upload (video mode only) -->
+    <div id="uploadSection">
+      <h2 class="section-title">Upload a Video</h2>
+      <input class="input file" type="file" name="video_file" accept=".mp4,.mov,.avi,.mkv,.webm">
+    </div>
+
+    <div class="form-actions">
+      <button class="btn" type="submit">Process</button>
+    </div>
+  </form>
+</div>
+
+<script>
+function toggleSections() {
+  const modeSel    = document.getElementById('mode');
+  const trackerSel = document.getElementById('tracker');
+  const btParams   = document.getElementById('btParams');
+  const uploadSec  = document.getElementById('uploadSection');
+  const tmRow      = document.getElementById('trackingModeRow');
+  const tmSelect   = document.getElementById('tracking_mode');
+  const trackerHint= document.getElementById('trackerHint');
+  const tmHint     = document.getElementById('tmHint');
+  const hintBlock  = document.getElementById('hintBlock');
+
+  const mode    = modeSel.value;
+  const tracker = trackerSel.value;
+
+  // Show/hide upload section
+  uploadSec.style.display = (mode === 'upload') ? 'block' : 'none';
+
+  // ByteTrack params visible only if: video mode + ByteTrack tracker
+  const showBT = (mode === 'upload' && tracker === 'bytetrack');
+  btParams.style.display = showBT ? 'block' : 'none';
+
+  // In camera mode we currently use ByteTrack internally.
+  if (mode === 'camera') {
+    trackerSel.value = 'bytetrack';
+    trackerSel.disabled = true;
+    trackerHint.textContent = 'Live camera currently uses ByteTrack (built-in).';
+    hintBlock.style.display = 'none'; // the "ByteTrack if FPS" hint is for video mode
+    // click-tracker not yet available for live; force auto mode and disable
+    tmSelect.disabled = false;
+    tmHint.textContent = 'Choose between Track All Objects or Click-to-Select for live camera.';
+  } else {
+    trackerSel.disabled = false;
+    trackerHint.textContent = '';
+    hintBlock.style.display = 'block';
+    tmSelect.disabled = false;
+    tmHint.textContent = '';
+  }
+}
+toggleSections();
+</script>
+
+{% endblock %}
+

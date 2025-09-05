@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}About · NanoTrack{% endblock %}
+{% block content %}
+<div class="card">
+  <h2 class="section-title">About This Project</h2>
+  <p>
+    <strong>NanoTrack</strong> is a real-time small object detection and tracking interface 
+    optimized for edge devices such as the Jetson Orin NX. 
+    The purpose of this project is to demonstrate how modern computer vision models 
+    (e.g. EdgeYOLO, Norfair, ByteTrack) can be integrated into an accessible, 
+    easy-to-use tool for research and educational purposes.
+  </p>
+</div>
+
+<div class="card">
+  <h3 class="sub-title">Technologies Used</h3>
+  <ul>
+    <li>YOLO-based object detection models (fine-tuned for small objects)</li>
+    <li>Tracking algorithms: Norfair &amp; ByteTrack</li>
+    <li>Torch / TensorRT optimization for high FPS on edge devices</li>
+    <li>Python + Flask backend with a modern HTML/CSS frontend</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h3 class="sub-title">Author</h3>
+  <p>
+    This project was developed by <strong>Ulaş Sakın</strong>, 
+    an Electrical and Electronics Engineering student, as part of ongoing efforts 
+    to learn and experiment with machine learning, computer vision, and embedded systems.  
+    You can find the source code on 
+    <a href="https://github.com/ulassakin/realtime-edge-small-object-tracking" target="_blank" rel="noopener">GitHub</a>.
+  </p>
+</div>
+{% endblock %}
+
