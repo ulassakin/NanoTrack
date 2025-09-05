@@ -139,11 +139,6 @@ NanoTrackUI/
 
 ---
 ## User Interface Screenshots
-<p align="center">
-  <img src="example_inferences/website.png" width="30%">
-  <img src="example_inferences/website_result_normal.png" width="30%">
-  <img src="example_inferences/website_result_one_object.png" width="30%">
-</p>
 
 ![UI Screenshot 1](example_inferences/website.png)  
 ![UI Screenshot 2](example_inferences/website_result_normal.png)  
