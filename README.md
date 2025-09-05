@@ -133,10 +133,4 @@ NanoTrackUI/
 
 ---
 
-## Roadmap
-- [x] Image and video inference
-- [x] Real-time camera tracking
-- [x] User Interface with click-to-select tracking
-- [ ] Multi-object selection in UI
-- [ ] Remote deployment (Jetson server → client browser)
-- [ ] Advanced visualization overlays (heatmaps, trajectory paths)
+
